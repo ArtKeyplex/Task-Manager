@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<title>
+        Ваши дела!
+    </title>
+<h1>Ваши дела!</h1>
+{% for task in page_obj %}
+{% if today_day|date:"Y-m-d" < task.due_date|date:"Y-m-d" %}
+<div class="container py-5">
+    <h2>{{ task.title }} </h2>
+       <hr>
+<li>
+    Время {{ task.due_date|date:"d E Y"  }}
+</li>
+    {% if task.description %}
+<li>
+    Описание: {{ task.description }}
+</li>
+    {% endif %}
+    {% if task.todo_list %}
+<li>
+    Группа событий: {{ task.todo_list }}
+</li>
+{% endif %}
+</div>
+{% endif %}
+{% endfor %}
+{% include 'includes/paginator.html' %}
+{% endblock %}

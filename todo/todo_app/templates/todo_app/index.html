@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<title>Добро пожаловать!</title>
+
+    <div class="container d-flex justify-content-center align">
+          <span class="fs-1">Выбери</span>
+    </div>
+<div style="text-align:center">
+     <button type="button" class="btn btn-light">
+         <a href="{% url 'add'  %}">
+             Добавить событие
+         </a>
+     </button>
+     <button type="button" class="btn btn-light">
+          <a href="{% url 'view'  %}">Посмотреть события</a>
+     </button>
+</div>
+{% endblock %}

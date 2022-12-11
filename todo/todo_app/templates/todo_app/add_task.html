@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Новое событие</h1>
+    <form method="POST" class="post-form">
+        <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                  <input type="hidden" name="csrfmiddlewaretoken" value="">
+                    <label for="id_text">
+                    </label>
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="form-group row my-3 p-3">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    <small id="id_text-help" class="form-text text-muted">
+                      {{ field.help_text }}
+                    </small>
+                    </div>
+                    {% endfor %}
+        <button type="submit" class="btn btn-light" value="Submit">Save</button>
+    </form>
+{% endblock %}
