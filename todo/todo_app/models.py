@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-
+from .helpers import slugify
 
 User = get_user_model()
 
@@ -26,8 +26,8 @@ class ToDoItem(models.Model):
         ToDoList, on_delete=models.CASCADE,
         null=True, blank=True, verbose_name='Выберите список дел'
     )
-    owner = models.ForeignKey(
-        User, on_delete=models.CASCADE, null=True, blank=True
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE
     )
 
     class Meta:
@@ -35,3 +35,26 @@ class ToDoItem(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class TimeTracker(models.Model):
+    task = models.CharField(
+        max_length=80, verbose_name='Название'
+    )
+    slug = models.SlugField()
+    final_time = models.IntegerField(default=0)
+    description = models.TextField(
+        null=True, blank=True, verbose_name='Описание'
+    )
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.slug = slugify(self.task)
+
+        super(TimeTracker, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.task

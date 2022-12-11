@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<title>
+    Трекер дел
+</title>
+<h1>Ваши дела!</h1>
+<div class="container py-5">
+    {% for task in page_obj%}
+    <h2>
+        <a href="{% url 'tracker_profile' task.slug %}">
+            {{ task.task }}
+        </a>
+    </h2>
+       <hr>
+    <li>
+      Описание: {{ task.description  }}
+    </li>
+    <li>
+        Всего времени: {{ task.final_time }}
+    </li>
+
+    {% endfor%}
+
+</div>
+{% endblock %}
+
+{% include 'includes/paginator.html' %}

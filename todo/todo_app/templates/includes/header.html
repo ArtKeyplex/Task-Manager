@@ -1,11 +1,45 @@
+{% load static %}
 <header>
-  <nav style="background: green;"> <!-- Красный фон для элемента nav -->
-    <ul>
-      <!-- Отобразить элемент в строку; установить размер шрифта в 20px; применить шрифт без отсечек -->
-      <li style="display: inline-block; font-size: 20px; font-family: sans-serif;">
-        <a href="/" style="color: white;">Главная страница</a> <!-- Шрифт покрасить в белый; -->
-      </li>
-      <!-- Отобразить элемент в строку; установить размер шрифта в 20px; применить шрифт без отсечек -->
-    </ul>
+  <nav class="navbar navbar-light" style="background-color: green">
+    <div class="container">
+      <a class="navbar-brand" href="{% url 'index' %}">
+        Главная
+      </a>
+
+{% with request.resolver_match.view_name as view_name %}
+      <ul class="nav nav-pills">
+        {% if request.user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" style="color:white" href="{% url 'add' %}">Новое дело</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" style="color:white" href="{% url 'add_tracker' %}">Новый трекер</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link link-light" href="{% url 'users:logout' %}">Выйти</a>
+        </li>
+        <li>
+          Пользователь: {{ user.username }}
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link link-light
+          {% if view_name  == 'users:login' %}
+          active
+          {% endif %}"
+             href="{% url 'users:login' %}">Войти</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link link-light
+          {% if view_name  == 'users:signup' %}
+          active
+          {% endif %}"
+             href="{% url 'users:signup' %}">Регистрация</a>
+        </li>
+        {% endif %}
+      </ul>
+      {% endwith %}
+      {# Конец добавленого в спринте #}
+    </div>
   </nav>
 </header>
