@@ -1,6 +1,9 @@
+import time
 from datetime import date
 
 from django.core.paginator import Paginator
+from django.db.models import F
+from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.generic import ListView
 from .models import ToDoList, ToDoItem, TimeTracker
@@ -77,7 +80,29 @@ def add_tracker(request):
 def tracker_profile(request, slug):
     template = 'todo_app/one_tracker.html'
     track = get_object_or_404(TimeTracker, slug=slug)
+    form = TimeTrackerForm(
+        request.POST or None,
+        files=request.FILES or None,
+        instance=track
+    )
+    if form.is_valid():
+        form.save()
+        return redirect('tracker_profile', slug=slug)
+    context = {
+        'track': track,
+        'form': form
+    }
+    return render(request, template, context)
+
+
+def count_time(request, slug):
+    template = 'todo_app/one_tracker.html'
+    track = get_object_or_404(TimeTracker, slug=slug)
     context = {
         'track': track,
     }
+    form = TimeTrackerForm(request.POST)
+    if form.is_valid():
+        answer = request.POST.get('time')
+        track.final_time += int(answer)
     return render(request, template, context)

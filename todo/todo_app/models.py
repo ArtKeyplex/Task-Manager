@@ -49,6 +49,7 @@ class TimeTracker(models.Model):
     user = models.ForeignKey(
         User, on_delete=models.CASCADE,
     )
+    counting = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.id:

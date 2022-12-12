@@ -17,7 +17,7 @@ class TimeTrackerForm(forms.ModelForm):
 
     class Meta:
         model = TimeTracker
-        fields = ['task', 'description']
+        fields = ['task', 'description',]
         widgets = {
             'description': forms.Textarea
         }

@@ -3,18 +3,99 @@
 <title>
     Трекер дел
 </title>
+
 <h1>Ваши дела!</h1>
 <div class="container py-5">
     <h2>
-            {{ track.task }}
 
+        {% csrf_token %}
+            {{ track.task }}
     </h2>
+
+<p id="secundomer"></p>
+    <input type="button" value="старт" onclick="start()" />
+    <input type="button" value="стоп" onclick="stop()" />
+    <input type="button" value="сброс" onclick="cancel()" />
+
+    <script>
+        var ms = 0;   //мс
+       var s = 0;    //сек
+       var m = 0;    //мин
+       var MS = 0;   //мс
+       var S = 0;    //сек
+       var M = 0;    //мин
+       var SM = document.getElementById("secundomer");
+
+           function fstart() {
+                        ms++;
+                   if (ms == 1000) {
+                       ms = 0;
+                       s += 1;
+                   }
+                   if (s == 60) {
+                       s = 0;
+                       m += 1;
+                   }
+                   if (m == 60) {
+                       clearInterval(x);
+                   }
+                   MS = "00";
+                   if (ms > 99)
+                       MS = (ms - (ms % 10)) / 10;
+                   if (ms > 9)
+                       MS = "0" + (ms-(ms%10))/10;
+                   if (s < 10)
+                       S = "0" + s;
+                   else
+                       S = s;
+                   if (m < 10)
+                       M = "0" + m;
+                   else
+                       M = m;
+                   SM.innerHTML = MS + ":" + S + ":" + M;
+           }
+
+           var x;
+           function start() { x = setInterval(fstart, 1) }
+
+        function stop()
+        {
+            clearInterval(x);
+        }
+
+        function cancel()
+        {
+            $.ajax({
+            url: {% url 'count_time' track.slug %},
+            method: 'post',
+            dataType: 'html',
+            data: {time: x},
+            success: function(data){
+                    alert(data);
+		        }
+            });
+            clearInterval(x);
+            ms = 0;
+            s = 0;
+            m = 0;
+            SM.innerHTML = MS + ":" + S + ":" + M;
+        }
+
+
+    </script>
+
+</div>
+    </h2>
+
        <hr>
-    <li>
+{% if track.description %}
+<li>
       Описание: {{ track.description  }}
     </li>
+{% endif %}
     <li>
         Всего времени: {{ track.final_time }}
     </li>
+ </form>
 </div>
 {% endblock %}
