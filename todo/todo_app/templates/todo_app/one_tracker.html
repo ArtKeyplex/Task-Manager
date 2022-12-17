@@ -7,11 +7,9 @@
 <h1>Ваши дела!</h1>
 <div class="container py-5">
     <h2>
-
-        {% csrf_token %}
             {{ track.task }}
     </h2>
-
+<form method="post">{% csrf_token %}
 <p id="secundomer"></p>
     <input type="button" value="старт" onclick="start()" />
     <input type="button" value="стоп" onclick="stop()" />
@@ -26,9 +24,10 @@
        var M = 0;    //мин
        var SM = document.getElementById("secundomer");
 
+
            function fstart() {
                         ms++;
-                   if (ms == 1000) {
+                   if (ms == 1) {
                        ms = 0;
                        s += 1;
                    }
@@ -56,24 +55,27 @@
            }
 
            var x;
-           function start() { x = setInterval(fstart, 1) }
+           function start() { x = setInterval(fstart, 1);
+            }
 
         function stop()
-        {
+        { data = JSON.stringify({
+    sec : s,
+    min : m
+})
+        fetch('http://127.0.0.1:8000/time_tracker/beg/', {
+    method: 'POST',
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+    },
+     body: data,
+  });
             clearInterval(x);
         }
 
         function cancel()
         {
-            $.ajax({
-            url: {% url 'count_time' track.slug %},
-            method: 'post',
-            dataType: 'html',
-            data: {time: x},
-            success: function(data){
-                    alert(data);
-		        }
-            });
             clearInterval(x);
             ms = 0;
             s = 0;
@@ -94,8 +96,8 @@
     </li>
 {% endif %}
     <li>
-        Всего времени: {{ track.final_time }}
+        Всего времени: {{ res }}
+
     </li>
- </form>
-</div>
+
 {% endblock %}

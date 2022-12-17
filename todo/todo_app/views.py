@@ -1,3 +1,4 @@
+import json
 import time
 from datetime import date
 
@@ -5,6 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import F
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView
 from .models import ToDoList, ToDoItem, TimeTracker
 from .forms import ToDoItemPost, TimeTrackerForm
@@ -85,24 +87,18 @@ def tracker_profile(request, slug):
         files=request.FILES or None,
         instance=track
     )
-    if form.is_valid():
-        form.save()
-        return redirect('tracker_profile', slug=slug)
+
+    if request.method == "POST":
+        post_data = json.loads(request.body.decode("utf-8"))
+        sec = int(post_data['sec'])
+        min = int(post_data['min']) * 60
+        TimeTracker.objects.filter(slug=slug).update(final_time=F('final_time') + sec + min)
+    ty_res = time.gmtime(track.final_time)
+    res = time.strftime("%d:%H:%M:%S", ty_res)
     context = {
         'track': track,
-        'form': form
+        'form': form,
+        'res': res
     }
     return render(request, template, context)
 
-
-def count_time(request, slug):
-    template = 'todo_app/one_tracker.html'
-    track = get_object_or_404(TimeTracker, slug=slug)
-    context = {
-        'track': track,
-    }
-    form = TimeTrackerForm(request.POST)
-    if form.is_valid():
-        answer = request.POST.get('time')
-        track.final_time += int(answer)
-    return render(request, template, context)

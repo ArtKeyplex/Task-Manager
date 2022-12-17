@@ -9,5 +9,4 @@ urlpatterns = [
     path('time_tracker/all/', views.time_tracker, name='time_tracker'),
     path('time_tracker/new/', views.add_tracker, name='add_tracker'),
     path('time_tracker/<slug:slug>/', views.tracker_profile, name='tracker_profile'),
-    path('time_tracker/<slug:slug>/', views.count_time, name='count_time'),
 ]
